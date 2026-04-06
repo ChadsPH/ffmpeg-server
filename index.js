@@ -1,5 +1,5 @@
 import express from "express";
-import m3u8ToMp4 from "m3u8-to-mp4";
+import M3U8ToMP4 from "m3u8-to-mp4";
 import fs from "fs";
 import os from "os";
 import path from "path";
@@ -17,7 +17,8 @@ app.get("/api/download", async (req, res) => {
   const outPath = path.join(tempDir, `animehub_${Date.now()}_${Math.floor(Math.random()*10000)}.mp4`);
 
   try {
-    await m3u8ToMp4(url, outPath, {
+    const converter = new M3U8ToMP4();
+    await converter.start(url, outPath, {
       ffmpegPath: "ffmpeg"
     });
     res.setHeader("Content-Type", "video/mp4");
