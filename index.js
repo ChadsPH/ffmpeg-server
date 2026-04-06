@@ -23,7 +23,10 @@ app.get("/api/download", async (req, res) => {
 
   try {
     const converter = new M3U8ToMP4();
-    await converter.start(url, outPath, {
+    // Try passing as a single options object (input, output, ffmpegPath)
+    await converter.start({
+      input: url,
+      output: outPath,
       ffmpegPath: "ffmpeg"
     });
     res.setHeader("Content-Type", "video/mp4");
