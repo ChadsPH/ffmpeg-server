@@ -16,6 +16,11 @@ app.get("/api/download", async (req, res) => {
   const tempDir = os.tmpdir();
   const outPath = path.join(tempDir, `animehub_${Date.now()}_${Math.floor(Math.random()*10000)}.mp4`);
 
+  // Debug logging
+  console.log("[ffmpeg-server] Incoming download request");
+  console.log("M3U8 URL:", url);
+  console.log("Output Path:", outPath);
+
   try {
     const converter = new M3U8ToMP4();
     await converter.start(url, outPath, {
@@ -30,6 +35,7 @@ app.get("/api/download", async (req, res) => {
     });
   } catch (err) {
     if (fs.existsSync(outPath)) fs.unlinkSync(outPath);
+    console.error("[ffmpeg-server] m3u8-to-mp4 failed", err);
     res.status(500).json({ error: "m3u8-to-mp4 failed", details: err.message });
   }
 });
