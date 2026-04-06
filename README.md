@@ -1,35 +1,34 @@
 # ffmpeg-server
 
-A simple Express server for converting m3u8 streams to MP4 using ffmpeg and m3u8-to-mp4. Designed for deployment on Render, Railway, or any Docker-compatible host.
+Render deployment for AnimeHub mobile downloads.
 
-## Features
-- `/api/download?url=...` endpoint: Converts a public m3u8 URL to downloadable MP4
-- Streams the MP4 file directly to the client
-- Cleans up temporary files after download
+## Deploy on Render
 
-## Usage
+1. Push this folder to a GitHub repo (can be separate from your main site)
+2. Go to https://render.com → New → Web Service
+3. Connect your GitHub repo
+4. Set these options:
+   - **Environment**: Docker
+   - **Branch**: main
+   - **Plan**: Free (or Starter for no sleep)
+5. Add this Environment Variable:
+   - `ALLOWED_ORIGIN` = `https://your-site.vercel.app`
+6. Click Deploy
 
-### Local Development
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Start the server:
-   ```bash
-   node index.js
-   ```
-3. Access: `http://localhost:3000/api/download?url=<m3u8_url>`
+## API
 
-### Deploy on Render
-- Use the included Dockerfile for deployment.
-- Exposes port 3000 by default.
+### GET /api/download
+Downloads and converts an HLS stream to MP4.
 
-## Environment Variables
-- `PORT` (optional): Port to run the server (default: 3000)
+**Query params:**
+- `url` — the m3u8 URL (required)
+- `referer` — the referer header to send (optional, defaults to megacloud.blog)
+- `filename` — output filename (optional, defaults to video.mp4)
 
-## Requirements
-- Node.js 18+
-- ffmpeg (installed automatically in Docker build)
+**Example:**
+```
+GET /api/download?url=https://...master.m3u8&referer=https://megacloud.blog/&filename=Naruto-EP1-1080p.mp4
+```
 
-## License
-MIT
+### GET /health
+Returns `{ "status": "ok" }` — use this to wake the server before downloading.
